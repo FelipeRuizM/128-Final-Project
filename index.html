@@ -183,10 +183,10 @@
                                             Please enter a valid email address for shipping updates.
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-4 mb-3" id="phone-div">
                                         <label for="phone-number">Phone Number</label>
                                         <input type="text" class="form-control" id="phone-number"
-                                            placeholder="(123) 456-7890">
+                                            placeholder="(123) 456-7890" onchange="validatePhoneNumber('#phone-div')">
                                         <div class="invalid-feedback">
                                             Please enter a valid phone number.
                                         </div>

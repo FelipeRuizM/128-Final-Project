@@ -9,7 +9,7 @@ let error_message; // Error messages json object
 $(document).ready(function() {
     cart.displayQuantityViewCart();
     load_data_with_fetch();
-    //$('#myModal').modal('show');
+    $('#myModal').modal('show');
 });
 
 function load_data_with_fetch() {
