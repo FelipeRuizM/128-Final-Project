@@ -80,7 +80,7 @@
                                         <input type="text" class="form-control" id="cc-number"
                                             placeholder="1234 1234 1234 1234" required="true"
                                             onchange="verifyCreditCard('#cc-number-div')">
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback" data-error="card_number">
                                             Invalid Credit Card Number (Only accept AMEX, MasterCard or Visa)
                                         </div>
                                     </div>
@@ -90,7 +90,7 @@
                                         <label for="cc-expiration-y">Exp. Year</label>
                                         <input type="text" class="form-control" id="cc-expiration-y" placeholder="YYYY"
                                             required="true" onchange="validateExpY('#cc-exp-year-div')">
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback" data-error="expiry_year">
                                             Invalid Year
                                         </div>
                                     </div>
@@ -98,7 +98,7 @@
                                         <label for="cc-expiration-m">Exp. Month</label>
                                         <input type="text" class="form-control" id="cc-expiration-m" placeholder="MM"
                                             required="true" onchange="validateExpM('#cc-exp-month-div')">
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback" data-error="expiry_month">
                                             Invalid Month
                                         </div>
                                     </div>
@@ -106,7 +106,7 @@
                                         <label for="cc-cvv">CVV</label>
                                         <input type="text" class="form-control" id="cc-cvv" placeholder="123"
                                             required="true" onchange="validateCVV('#cc-cvv-div')">
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback" data-error="security_code">
                                             Security code required
                                         </div>
                                     </div>
@@ -142,7 +142,7 @@
                                     <label for="address">Address</label>
                                     <input type="text" class="form-control" id="address" placeholder="1234 Main St"
                                         required="true" onchange="validateTextField('#address-div', 5);geocoder()"
-                                        oninput="geocoder()" list="datalist-address" name="datalist-address">
+                                        oninput="geocoder()" list="datalist-address" autocomplete="false" name="datalist-address">
                                     <datalist id="datalist-address"></datalist>
                                     <div class="invalid-feedback">
                                         Please enter your shipping address.
@@ -160,8 +160,8 @@
                                         <label for="country">Country</label>
                                         <select class="form-select" id="country" required="true">
                                             <option value="">Choose...</option>
-                                            <option value="United States">United States</option>
-                                            <option value="Canada">Canada</option>
+                                            <option value="US">US</option>
+                                            <option value="CA">CA</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3" id="city-div">
@@ -265,8 +265,8 @@
                                         <label for="countryS">Country</label>
                                         <select class="form-select" id="countryS" required="">
                                             <option value="">Choose...</option>
-                                            <option>United States</option>
-                                            <option>Canada</option>
+                                            <option value="US">US</option>
+                                            <option value="CA">CA</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3" id="city-divS">

@@ -6,10 +6,11 @@ let previousSelect = "cad"; // Previous/Current currency
 let shipping = 10; // Shipping price (in cad)
 let error_message; // Error messages json object
 
-$(document).ready(function() {
+$(document).ready(function () {
     cart.displayQuantityViewCart();
     load_data_with_fetch();
     $('#myModal').modal('show');
+    setAll();
 });
 
 function load_data_with_fetch() {
@@ -22,12 +23,12 @@ function load_data_with_fetch() {
                 createCard(product);
             }
             let catalog_container = document.getElementById("catalog");
-            $(catalog_container).imagesLoaded(function() {
+            $(catalog_container).imagesLoaded(function () {
                 // This initializes the masonry container AFTER the product images are loaded
                 var msnry = new Masonry(catalog_container);
-                });
+            });
             // This has to be here because fetch is assync
-            $(".card-button").click(function() {
+            $(".card-button").click(function () {
                 let id = this.id.replace("-add-to-cart-button", "");
                 cart.add(id);
             });
@@ -35,24 +36,24 @@ function load_data_with_fetch() {
         }).catch(error => {
             // If something happens with the first API, fetch Backup Fake Store API
             fetch("https://deepblue.camosun.bc.ca/~c0180354/ics128/final/fakestoreapi.json").
-            then(response => response.json()).
-            then((json) => {
-                allProducts = json;
-                for (let product of allProducts) {
-                    createCard(product);
-                }
-                let catalog_container = document.getElementById("catalog");
-                $(catalog_container).imagesLoaded(function() {
-                    // This initializes the masonry container AFTER the product images are loaded
-                    var msnry = new Masonry(catalog_container);
+                then(response => response.json()).
+                then((json) => {
+                    allProducts = json;
+                    for (let product of allProducts) {
+                        createCard(product);
+                    }
+                    let catalog_container = document.getElementById("catalog");
+                    $(catalog_container).imagesLoaded(function () {
+                        // This initializes the masonry container AFTER the product images are loaded
+                        var msnry = new Masonry(catalog_container);
                     });
-                // This has to be here because fetch is assync
-                $(".card-button").click(function() {
-                    let id = this.id.replace("-add-to-cart-button", "");
-                    cart.add(id);
+                    // This has to be here because fetch is assync
+                    $(".card-button").click(function () {
+                        let id = this.id.replace("-add-to-cart-button", "");
+                        cart.add(id);
+                    });
+                    cart.displayCartCheckout();
                 });
-                cart.displayCartCheckout();
-            });
         });
 
     // Fetch Currency API
@@ -63,12 +64,12 @@ function load_data_with_fetch() {
         }).catch(error => {
             // If something happens with the first API, fetch Currency API
             fetch("https://deepblue.camosun.bc.ca/~c0180354/ics128/final/currencies-cad.json").
-            then(response => response.json()).
-            then((json) => {
-                price_API = json;
-            });
+                then(response => response.json()).
+                then((json) => {
+                    price_API = json;
+                });
         });
-    
+
     // Fetch Error Messages API
     fetch('https://deepblue.camosun.bc.ca/~c0180354/ics128/final/').
         then(response => response.json()).

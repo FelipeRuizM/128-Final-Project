@@ -1,6 +1,24 @@
 let lastClick = 0;
 let delay = 100;
 let shipping_same_as_billing = true;
+/* Dummy Card numbers:
+    MasterCard 5555 5555 5555 4444
+    Visa       4012 8888 8888 1881
+    Amex       3759 870000 00088
+*/
+
+function setAll() {
+    // Debbuging function for checkout
+    $("#cc-number-div input").val("4111 1111 1111 1110");
+    $("#cc-exp-month-div input").val("08");
+    $("#cc-exp-year-div input").val("2022");
+    $("#cc-cvv-div input").val("123");
+    $("#first-name-div input").val("Felipe");
+    $("#last-name-div input").val("Ruiz");
+    $("#address-div input").val("930 Yates");
+
+    setSpecificErrorMessage();
+}
 
 function setErrorMessage() {
     // Set all error messages for every input field using the info in this link 
@@ -13,6 +31,15 @@ function setErrorMessage() {
     let error_ps = $(".invalid-feedback");
     for (let i = 0; i < error_ps.length; i++) {
         error_ps[i].innerHTML = error_messages[i];
+    }
+}
+
+function setSpecificErrorMessage(error, error_m) {
+    for (let i = 0; i < $("[data-error]").length; i++) {
+        if (($($("[data-error]")[i]).attr("data-error")) === error) {
+            $($("[data-error]")[i]).html(error_m);
+            $($("[data-error]")[i]).show();
+        }
     }
 }
 
@@ -48,45 +75,66 @@ function submitOrder() {
         expiry_year: $("#cc-exp-year-div input").val().trim(),
         security_code: $("#cc-cvv").val().trim(),
         amount: cart.getPriceTotal().toFixed(2),
-        taxes: 'amount of taxes -- example: 12.34',
+        taxes: '12',
         shipping_amount: shipping,
         currency: previousSelect,
         items: cart.products,
         billing: {
-            first_name: $("#firstName") .val().trim(),
-            last_name: $("#lastName")   .val().trim(),
-            address_1: $("#address")    .val().trim(),
-            address_2: $("#address2")   .val().trim(),
-            city: $("#city")            .val().trim(),
-            province: $("#state")       .val().trim(),
-            country: $("#country")      .val().trim(),
-            postal: $("#zip")           .val().trim(),
-            phone: $("#phone-number")   .val().trim(),
-            email: $("#email")          .val().trim()
+            first_name: $("#firstName").val().trim(),
+            last_name: $("#lastName").val().trim(),
+            address_1: $("#address").val().trim(),
+            address_2: $("#address2").val().trim(),
+            city: $("#city").val().trim(),
+            province: $("#state").val().trim(),
+            country: $("#country").val().trim(),
+            postal: $("#zip").val().trim(),
+            phone: $("#phone-number").val().trim(),
+            email: $("#email").val().trim()
         },
         shipping: {
             first_name: $("#firstNameS").val().trim(),
-            last_name: $("#lastNameS")  .val().trim(),
-            address_1: $("#addressS")   .val().trim(),
-            address_2: $("#address2S")  .val().trim(),
-            city: $("#cityS")           .val().trim(),
-            province: $("#stateS")      .val().trim(),
-            country: $("#countryS")     .val().trim(),
-            postal: $("#zipS")          .val().trim()
+            last_name: $("#lastNameS").val().trim(),
+            address_1: $("#addressS").val().trim(),
+            address_2: $("#address2S").val().trim(),
+            city: $("#cityS").val().trim(),
+            province: $("#stateS").val().trim(),
+            country: $("#countryS").val().trim(),
+            postal: $("#zipS").val().trim()
         }
     };
-    console.log(submission_data);
-    console.log(submission_data.billing);
-    console.log(submission_data.shipping);
+    
     let form_data = new FormData();
     form_data.append('submission', JSON.stringify(submission_data));
+    let errors_data;
+
+    fetch('https://deepblue.camosun.bc.ca/~c0180354/ics128/final/', { 
+        method: "POST",
+        cache: 'no-cache',
+        body: form_data
+    }).then(response => response.json()).
+    then((json) => {
+        errors_data = json;
+        if (errors_data.status === "NOT SUBMITTED") {
+            console.log(errors_data);
+            for (let [error, error_m] of Object.entries(errors_data.error)) {
+                setSpecificErrorMessage(error, error_m);
+            }
+
+        } else {
+            console.log(errors_data.status);
+        }
+    });
 }
 
 function validateAll() {
+    changeShipping();
+    changeShipping();
     let valid = true;
+    
     valid = valid & verifyCreditCard("#cc-number-div");
     valid = valid & validateExpM("#cc-exp-month-div");
     valid = valid & validateExpY("#cc-exp-year-div");
+    valid = valid & checkExp();
     valid = valid & validateCVV("#cc-cvv-div");
     valid = valid & validateTextField("#first-name-div", 2);
     valid = valid & validateTextField("#last-name-div", 2);
@@ -101,18 +149,24 @@ function validateAll() {
     valid = valid & validateTextField("#city-divS", 3);
     valid = valid & validatePC("#pc-divS");
 
-    console.log(valid);
     if (valid) {
         submitOrder();
     }
 }
 
+function checkExp() {
+    let error_message = $("#cc-exp-month-div .invalid-feedback");
+    let month = parseInt($("#cc-exp-month-div input").val().trim());
+    let year  = parseInt($("#cc-exp-year-div input").val().trim());
+    if (year === new Date().getFullYear() && month > new Date().getMonth()) {
+        error_message.hide();
+        return true;
+    }
+    error_message.show();
+    return false;
+}
+
 function verifyCreditCard(div) {
-    /* Dummy Card numbers:
-     MasterCard 5555 5555 5555 4444
-     Visa       4012 8888 8888 1881
-     Amex       3759 870000 00088
-    */
     let error_message = $(div + " .invalid-feedback");
     let cc_number = $(div + " #cc-number").val();
     if (typeof cc_number !== "string") { return false; }
@@ -237,21 +291,24 @@ function geocoder(s = "") {
         fetch("https://geocoder.ca/?autocomplete=1&geoit=xml&auth=test&json=1&locate=" + userInput).
             then(response => response.json()).
             then((json) => {
-                let streets = json['streets']['street'];
-                $("#datalist-address" + s).empty();
-                for (let i = 0; i < 5; i++) {
-                    $("#datalist-address" + s).append(`
-                        <option value="${streets[i]}"></option>
-                    `);
-                }
+                
+                if (!(typeof json === "undefined" || typeof json['streets'] === "undefined" || typeof json['streets']['street'] === "undefined")) {
+                    let streets = json['streets']['street'];
+                    $("#datalist-address" + s).empty();
+                    for (let i = 0; i < 5; i++) {
+                        $("#datalist-address" + s).append(`
+                            <option value="${streets[i]}"></option>
+                        `);
+                    }
 
-                userInput = $("#address" + s).val().split(", ");
-                if (userInput.length === 4) {
-                    $("#address" + s).val(userInput[0]);
-                    $("#city" + s).val(userInput[1]);
-                    $("#state" + s).val(userInput[2]);
-                    $("#zip" + s).val(userInput[3]);
-                    $("#country" + s).val("Canada");
+                    userInput = $("#address" + s).val().split(", ");
+                    if (userInput.length === 4) {
+                        $("#address" + s).val(userInput[0]);
+                        $("#city" + s).val(userInput[1]);
+                        $("#state" + s).val(userInput[2]);
+                        $("#zip" + s).val(userInput[3]);
+                        $("#country" + s).val("CA");
+                    }
                 }
             });
     } catch (e) {

@@ -16,7 +16,7 @@ class Cart {
         set_cookie("shopping_cart", this.products);
         this.displayQuantityViewCart();
     }
-    
+
     delete(id) {
         // Delete products from the cart
         delete this.products[id];
@@ -32,7 +32,7 @@ class Cart {
         $("#cart-table").after('<button type="button" id="checkout-button" class="nice-button" data-toggle="modal" data-target="#exampleModalCenter" onclick="cart.displayCartCheckout()">Checkout</button>');
 
         // Listener to checkout cart tab button
-        $("#checkout-button").click(function() {
+        $("#checkout-button").click(function () {
             $('#myModal').modal('show');
         });
     }
@@ -40,7 +40,7 @@ class Cart {
     getPriceTotal() {
         // Gets the total price of the cart
         let total = 0;
-        for(let id in this.products) {
+        for (let id in this.products) {
             total += allProducts[id - 1].price * this.products[id];
         }
         return total;
@@ -49,7 +49,7 @@ class Cart {
     getProductTotal() {
         // Gets the total quantity of products in the cart
         let total = 0;
-        for(let id in this.products) {
+        for (let id in this.products) {
             total += this.products[id];
         }
         return total;
@@ -84,7 +84,7 @@ class Cart {
             `);
 
             // Set table body with products
-            for(let id in this.products) {
+            for (let id in this.products) {
                 let p = allProducts[id - 1];
                 $("#cart-body").html($("#cart-body").html() + `
                     <tr>
@@ -122,11 +122,11 @@ class Cart {
             $("#empty-cart-p").html("");
 
             // Listeners
-            $(".delete-product").click(function() {
+            $(".delete-product").click(function () {
                 $this.delete(this.id.replace("-delete-button", ""));
             });
 
-            $("#empty-cart-button").click(function() {
+            $("#empty-cart-button").click(function () {
                 $this.products = {};
                 set_cookie("shopping_cart", $this.products);
                 $this.displayCart();
@@ -161,10 +161,10 @@ class Cart {
         // Displays the cart in the checkout tab
         $("#cart-tab-checkout").html("");
 
-        for(let id in this.products) {
+        for (let id in this.products) {
             let p = allProducts[id - 1];
-            $("#cart-tab-checkout").html($("#cart-tab-checkout").html() + 
-            `<li class="list-group-item d-flex justify-content-between lh-condensed">
+            $("#cart-tab-checkout").html($("#cart-tab-checkout").html() +
+                `<li class="list-group-item d-flex justify-content-between lh-condensed">
                 <div>
                     <h6 class="my-0">${p.title}</h6>
                     <small class="text-muted">x${this.products[id]}</small>
@@ -172,9 +172,9 @@ class Cart {
                 <span class="text-muted">${priceSign}${(p.price * this.products[id]).toFixed(2)}</span>
             </li>`);
         }
-        
-        $("#cart-tab-checkout").html($("#cart-tab-checkout").html() + 
-        `<li class="list-group-item d-flex justify-content-between bg-light">
+
+        $("#cart-tab-checkout").html($("#cart-tab-checkout").html() +
+            `<li class="list-group-item d-flex justify-content-between bg-light">
             <div>
                 <h6 class="my-0">Shipping</h6>
             </div>
