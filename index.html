@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="style.css">
+    <title>Final Project - 1.9</title>
+</head>
+
+<body>
+    <!-- Nav Bar -->
+    <nav class="navbar sticky-top navbar-right" id="navbar-view-cart">
+        <!-- View Cart Button -->
+
+        <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+            aria-controls="offcanvasRight" id="cart-button" onclick=displayHamburger()>
+            <i class="material-symbols-outlined" id="shopping-cart-icon">
+                shopping_cart
+            </i>View Cart
+        </button>
+
+        <!-- Currency Changer Select -->
+        <select name="currency-select" class="form-select" id="currency-select" aria-label=".form-select-sm"
+            onchange="changeCurrency(this)">
+            <option value="cad">Canadian Dollar</option>
+            <option value="usd">US Dollar</option>
+            <option value="brl">Brazilian Real</option>
+        </select>
+
+    </nav>
+
+    <!-- Right panel (Cart) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Your Cart</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" id="myPanel">
+            <table class="table table-hover" id="cart-table">
+            </table>
+            <p id="empty-cart-p" class="text-center"></p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="row">
+                    <!-- Your cart tab -->
+                    <div class="col-md-4 order-md-2 mb-4">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Your cart</span>
+                            <span class="badge badge-secondary badge-pill">3</span>
+                        </h4>
+                        <ul class="list-group mb-3" id="cart-tab-checkout">
+                        </ul>
+                    </div>
+                    <div class="col-md-8 order-md-1">
+                        <form class="needs-validation" novalidate="">
+
+                            <!-- Payment -->
+                            <h4 class="mb-3">Payment</h4>
+
+                            <div>
+                                <div class="row">
+                                    <div class="col-md-12 mb-3" id="cc-number-div">
+                                        <label for="cc-number">Credit card number</label>
+                                        <input type="text" class="form-control" id="cc-number"
+                                            placeholder="1234 1234 1234 1234" required="true"
+                                            onchange="verifyCreditCard('#cc-number-div')">
+                                        <div class="invalid-feedback">
+                                            Invalid Credit Card Number (Only accept AMEX, MasterCard or Visa)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3" id="cc-exp-year-div">
+                                        <label for="cc-expiration-y">Exp. Year</label>
+                                        <input type="text" class="form-control" id="cc-expiration-y" placeholder="YYYY"
+                                            required="true" onchange="validateExpY('#cc-exp-year-div')">
+                                        <div class="invalid-feedback">
+                                            Invalid Year
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3" id="cc-exp-month-div">
+                                        <label for="cc-expiration-m">Exp. Month</label>
+                                        <input type="text" class="form-control" id="cc-expiration-m" placeholder="MM"
+                                            required="true" onchange="validateExpM('#cc-exp-month-div')">
+                                        <div class="invalid-feedback">
+                                            Invalid Month
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3" id="cc-cvv-div">
+                                        <label for="cc-cvv">CVV</label>
+                                        <input type="text" class="form-control" id="cc-cvv" placeholder="123"
+                                            required="true" onchange="validateCVV('#cc-cvv-div')">
+                                        <div class="invalid-feedback">
+                                            Security code required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="mb-4">
+
+                            <!-- Billing Address -->
+                            <h4 class="mb-3">Billing address</h4>
+
+                            <div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3" id="first-name-div">
+                                        <label for="firstName">First name</label>
+                                        <input type="text" class="form-control" id="firstName" placeholder="Jane"
+                                            required="true" onchange="validateTextField('#first-name-div', 2)">
+                                        <div class="invalid-feedback">
+                                            Valid first name is required.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3" id="last-name-div">
+                                        <label for="lastName">Last name</label>
+                                        <input type="text" class="form-control" id="lastName" placeholder="Doe" value=""
+                                            required="true" onchange="validateTextField('#last-name-div', 2)">
+                                        <div class="invalid-feedback">
+                                            Valid last name is required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3" id="address-div">
+                                    <label for="address">Address</label>
+                                    <input type="text" class="form-control" id="address" placeholder="1234 Main St"
+                                        required="true" onchange="validateTextField('#address-div', 5);geocoder()"
+                                        oninput="geocoder()" list="datalist-address" name="datalist-address">
+                                    <datalist id="datalist-address"></datalist>
+                                    <div class="invalid-feedback">
+                                        Please enter your shipping address.
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
+                                    <input type="text" class="form-control" id="address2"
+                                        placeholder="Apartment or suite">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="country">Country</label>
+                                        <select class="form-select" id="country" required="true">
+                                            <option value="">Choose...</option>
+                                            <option value="United States">United States</option>
+                                            <option value="Canada">Canada</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3" id="city-div">
+                                        <label for="city">City</label>
+                                        <input type="text" class="form-control" id="city" placeholder="Victoria"
+                                            required="true" onchange="validateTextField('#city-div', 3)">
+                                        <div class="invalid-feedback">
+                                            City required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8 mb-3" id="email-div">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email"
+                                            placeholder="you@example.com" onchange="validateEmail('#email-div')">
+                                        <div class="invalid-feedback">
+                                            Please enter a valid email address for shipping updates.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="phone-number">Phone Number</label>
+                                        <input type="text" class="form-control" id="phone-number"
+                                            placeholder="(123) 456-7890">
+                                        <div class="invalid-feedback">
+                                            Please enter a valid phone number.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="state">Province/State</label>
+                                        <input type="text" class="form-control" id="state" placeholder="BC">
+                                        <div class="invalid-feedback">
+                                            Please provide a valid state.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3" id="pc-div">
+                                        <label for="zip">Postal/Zip code</label>
+                                        <input type="text" class="form-control" id="zip" placeholder="XXX XXX or 12345"
+                                            required="true" onchange="validatePC('#pc-div')">
+                                        <div class="invalid-feedback-alt">
+                                            Please provide a valid postal code
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="mb-4">
+
+                            <!-- Shipping -->
+                            <h4 class="mb-3">Shipping Address</h4>
+                            <div class="custom-control custom-checkbox">
+                                <input checked type="checkbox" class="custom-control-input" id="same-address"
+                                    onclick="changeShipping()">
+                                <label class="custom-control-label" for="same-address">Shipping address is the same as
+                                    my billing address</label>
+                            </div>
+
+                            <div id="shipping-info">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3" id="first-name-divS">
+                                        <label for="firstNameS">First name</label>
+                                        <input type="text" class="form-control" id="firstNameS" placeholder="Jane"
+                                            required="true" onchange="validateTextField('#first-name-divS', 2)">
+                                        <div class="invalid-feedback">
+                                            Valid first name is required.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3" id="last-name-divS">
+                                        <label for="lastNameS">Last name</label>
+                                        <input type="text" class="form-control" id="lastNameS" placeholder="Doe"
+                                            required="true" onchange="validateTextField('#last-name-divS', 2)">
+                                        <div class="invalid-feedback">
+                                            Valid last name is required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3" id="address-divS">
+                                    <label for="addressS">Address</label>
+                                    <input type="text" class="form-control" id="addressS" placeholder="1234 Main St"
+                                        required="true" onchange="validateTextField('#address-divS', 5);geocoder('S')"
+                                        oninput="geocoder('S')" list="datalist-addressS" name="datalist-addressS">
+                                    <datalist id="datalist-addressS"></datalist>
+                                    <div class="invalid-feedback">
+                                        Please enter your shipping address.
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="address2S">Address 2 <span class="text-muted">(Optional)</span></label>
+                                    <input type="text" class="form-control" id="address2S"
+                                        placeholder="Apartment or suite">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="countryS">Country</label>
+                                        <select class="form-select" id="countryS" required="">
+                                            <option value="">Choose...</option>
+                                            <option>United States</option>
+                                            <option>Canada</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3" id="city-divS">
+                                        <label for="cityS">City</label>
+                                        <input type="text" class="form-control" id="cityS" placeholder="Victoria"
+                                            required="true" onchange="validateTextField('#city-divS', 3)">
+                                        <div class="invalid-feedback">
+                                            City required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="stateS">Province/State</label>
+                                        <input type="text" class="form-control" id="stateS" placeholder="BC">
+                                        <div class="invalid-feedback">
+                                            Please provide a valid state.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3" id="pc-divS">
+                                        <label for="zipS">Postal code</label>
+                                        <input type="text" class="form-control" id="zipS" placeholder="XXX XXX"
+                                            required="true" onchange="validatePC('#pc-divS')">
+                                        <div class="invalid-feedback-alt">
+                                            Please provide a valid postal code
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="mb-4">
+
+                            <button class="btn btn-primary btn-lg btn-block" type="button"
+                                onclick="validateAll()">Finish
+                                Checkout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display the products -->
+    <div class="container">
+        <div class="row" data-masonry='{"percentPosition": true }' id="catalog">
+        </div>
+    </div>
+
+
+    <!-- Scripts -->
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+        crossorigin="anonymous"></script>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Bootstrap Masonry -->
+    <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+        integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous"
+        async></script>
+
+    <!-- Images loaded -->
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+
+    <!-- Cookie Manager -->
+    <script src="https://deepblue.camosun.bc.ca/~c0180354/ics128/final/cookie-manager.js"></script>
+
+    <!-- My JS Scripts -->
+    <script src="scripts/Cart.js"></script>
+    <script src="scripts/script.js"></script>
+    <script src="scripts/checkout.js"></script>
+
+</body>
+
+</html>

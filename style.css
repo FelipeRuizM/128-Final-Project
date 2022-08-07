@@ -1,0 +1,125 @@
+:root {
+    /* Variable for color */
+    --color1: #EDE7E3;
+    --color2: #82C0CC;
+    --color3: #489FB5;
+    --color4: #26B3CF;
+    --color5: #FFA62B;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color2);
+}
+
+#navbar-view-cart {
+    margin-bottom: 1%;
+    background-color:#489FB5;
+}
+
+#cart-button {
+    box-shadow: 0;
+    background-color: var(--color5);
+    margin-left: 10px;
+}
+
+#currency-select {
+    width: auto;
+    margin-right: 10px;
+}
+
+.delete-product {
+    border: 0;
+    background: none;
+}
+
+.trash-bin {
+    color: #f00;
+}
+
+.card {
+    /* For the whole product card */
+    border: 0;
+    border-radius: 20px;
+    background-color: var(--color1);
+    padding: 5%;
+    transition: all 0.5s ease-out;
+    box-shadow: 7px 7px 1px #555;
+}
+
+.card:hover {
+    /* When you hover your mouse in a card */
+    background-color: var(--color4);
+    transform: translate(0px, -1%);
+}
+
+.product-image {
+    /* Rounded borders for the image */
+    border-radius: 10px;
+}
+
+.product-price {
+    font-weight: bold;
+}
+
+.nice-button {
+    /* Card button styling */
+    padding: 3%;
+    background-color: var(--color5);
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 4px 4px 0 #555;
+}
+
+.nice-button:active {
+    box-shadow: inset 4px 4px 0 #555;
+    transform: translate(5%, 10%);
+}
+
+#empty-cart-button {
+    background-color: #FF5A5F;
+    margin-right: 45%;
+}
+
+#checkout-button {
+    background-color: #4CB963;
+}
+
+.remove-button-background {
+    background: 0;
+    border: 0;
+}
+
+.nav-pills {
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.payment-label {
+    display: inline-block;
+    width: 150px;
+    margin-bottom: 30px;
+}
+
+.payment-input {
+    border-radius: 5px;
+    margin-right: 30px;
+    width: 230px;
+}
+
+.modal-content {
+    padding: 2%;
+}
+
+#shipping-info {
+    display: none;
+}
+
+.invalid-feedback-alt {
+    display: none;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: .875em;
+    color: #dc3545;
+}

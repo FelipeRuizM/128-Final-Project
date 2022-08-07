@@ -1,0 +1,16 @@
+FINAL PROJECT INSTRUCTIONS
+
+TO DO:
+    Confirm Order (displays order subtotal, shipping total, taxes (specific to the region -- check for appropriate taxes for Canadian provinces), and order total
+
+    8. Order Submission [10]
+
+    11. Git Commit/Push [5]
+
+CODE:
+    taxes appropriate to province
+    submit data
+
+THINGS TO ASK BRANDON:
+    cart table formatting
+    postal code error message
