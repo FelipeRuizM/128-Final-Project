@@ -1,24 +1,22 @@
 let lastClick = 0;
 let delay = 100;
 let shipping_same_as_billing = true;
-/* Dummy Card numbers:
-    MasterCard 5555 5555 5555 4444
-    Visa       4012 8888 8888 1881
-    Amex       3759 870000 00088
-*/
-
-function setAll() {
-    // Debbuging function for checkout
-    $("#cc-number-div input").val("4111 1111 1111 1110");
-    $("#cc-exp-month-div input").val("08");
-    $("#cc-exp-year-div input").val("2022");
-    $("#cc-cvv-div input").val("123");
-    $("#first-name-div input").val("Felipe");
-    $("#last-name-div input").val("Ruiz");
-    $("#address-div input").val("930 Yates");
-
-    setSpecificErrorMessage();
-}
+// Provinces and their taxes in % 
+let provinces = {
+    "AB": 5,
+    "BC": 12,
+    "MB": 12,
+    "NB": 15,
+    "NL": 15,
+    "NT": 5,
+    "NS": 15,
+    "NU": 5,
+    "ON": 13,
+    "PE": 15,
+    "QC": 14.975,
+    "SK": 11,
+    "YT": 5
+};
 
 function setErrorMessage() {
     // Set all error messages for every input field using the info in this link 
@@ -35,6 +33,7 @@ function setErrorMessage() {
 }
 
 function setSpecificErrorMessage(error, error_m) {
+    // Shows a specific error message to the user
     for (let i = 0; i < $("[data-error]").length; i++) {
         if (($($("[data-error]")[i]).attr("data-error")) === error) {
             $($("[data-error]")[i]).html(error_m);
@@ -69,13 +68,14 @@ function changeShipping() {
 }
 
 function submitOrder() {
+    // Submits user order
     let submission_data = {
         card_number: $("#cc-number").val().replace(/\s+/g, ''),
         expiry_month: $("#cc-exp-month-div input").val().trim(),
         expiry_year: $("#cc-exp-year-div input").val().trim(),
         security_code: $("#cc-cvv").val().trim(),
         amount: cart.getPriceTotal().toFixed(2),
-        taxes: '12',
+        taxes: (taxes / 100 * cart.getPriceTotal()).toFixed(2),
         shipping_amount: shipping,
         currency: previousSelect,
         items: cart.products,
@@ -117,16 +117,21 @@ function submitOrder() {
         $("#modal-confirmation").hide();
         if (errors_data.status === "NOT SUBMITTED") {
             for (let [error, error_m] of Object.entries(errors_data.error)) {
+                // Show errors
                 setSpecificErrorMessage(error, error_m);
             }
         } else {
+            // If submission succeded
             $("#myModal").hide();
             $("#modal-success").fadeIn().delay(5000).fadeOut();
+            // Clear cart
             cart.products = {};
             set_cookie("shopping_cart", cart.products);
+            // Reload some fields
             cart.displayQuantityViewCart();
             cart.displayCart();
 
+            // Reloads the page after 5 seconds
             setTimeout(function() {
                 $("#myForm").submit();
             }, 5000);
@@ -135,6 +140,7 @@ function submitOrder() {
 }
 
 function validateAll() {
+    // Check if everything is ok
     changeShipping();
     changeShipping();
     let valid = true;
@@ -158,6 +164,14 @@ function validateAll() {
     valid = valid & validatePC("#pc-divS");
 
     if (valid) {
+        // If it's valid
+        try {
+            // Try to change taxes to the appropriate province
+            taxes = provinces[$("#stateS").val()];
+        } catch (e) {
+            // If get's an error, just set to 0 (US)
+            taxes = 0;
+        }
         $("#modal-confirmation").show();
         cart.displayCartConfirmation();
         $(".close").on("click", function() {
@@ -179,6 +193,7 @@ function checkExp() {
 }
 
 function verifyCreditCard(div) {
+    // Validate credit card number
     let error_message = $(div + " .invalid-feedback");
     let cc_number = $(div + " #cc-number").val();
     if (typeof cc_number !== "string") { return false; }
@@ -195,6 +210,7 @@ function verifyCreditCard(div) {
 }
 
 function validateExpM(div) {
+    // Validates month
     let error_message = $(div + " .invalid-feedback");
     let month = $(div + " input").val().trim();
     let month_regex = /^(0?[1-9]|1[012])$/;
@@ -209,6 +225,7 @@ function validateExpM(div) {
 }
 
 function validateExpY(div) {
+    // Validates year 
     let error_message = $(div + " .invalid-feedback");
     let yearToday = new Date().getFullYear();
     let year = $(div + " input").val().trim();
@@ -224,6 +241,7 @@ function validateExpY(div) {
 }
 
 function validateCVV(div) {
+    // Validates CVV
     let error_message = $(div + " .invalid-feedback");
     let cvv = $(div + " #cc-cvv").val().trim();
     let cvv_regex = /^[0-9]{3,4}$/;
@@ -251,6 +269,7 @@ function validateTextField(div, number) {
 }
 
 function validateEmail(div) {
+    // Validates Email
     let error_message = $(div + " .invalid-feedback");
     let email = $(div + " input").val().trim();
     let email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -263,6 +282,7 @@ function validateEmail(div) {
 }
 
 function validatePhoneNumber(div) {
+    // Validates Phone num
     let error_message = $(div + " .invalid-feedback");
     let phone_num = $(div + " input").val().trim();
     let phone_regex = /^[0-9]{3}[ -]?[0-9]{3}[ -]?[0-9]{4}$/;
@@ -280,6 +300,7 @@ function validatePhoneNumber(div) {
 }
 
 function validatePC(div) {
+    // Validates Postal Code
     let error_message = $(div + " .invalid-feedback-alt");
     let pc = $(div + " input").val().trim();
     let pc_regex_ca = /[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][- ]?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]/;
@@ -292,7 +313,21 @@ function validatePC(div) {
     return false;
 }
 
+function validateProvince() {
+    // Validates Province (only shipping)
+    let error_message = $("#stateS-div .invalid-feedback");
+    let province = $("#stateS-div input").val().trim();
+    if (province.length !== 2) {
+        error_message.show();
+        return false;
+    }
+    error_message.hide();
+    return true;
+    
+}
+
 function geocoder(s = "") {
+    // Autocomplete for address 1 field
     if (lastClick >= (Date.now() - delay)) {
         return;
     }
