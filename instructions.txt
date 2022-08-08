@@ -3,8 +3,6 @@ FINAL PROJECT INSTRUCTIONS
 TO DO:
     Confirm Order (displays order subtotal, shipping total, taxes (specific to the region -- check for appropriate taxes for Canadian provinces), and order total
 
-    11. Git Commit/Push [5]
-
 CODE:
     taxes appropriate to province
     submit data

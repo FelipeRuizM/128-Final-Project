@@ -5,6 +5,7 @@ let price_API;   // Currencies json object
 let previousSelect = "cad"; // Previous/Current currency
 let shipping = 10; // Shipping price (in cad)
 let error_message; // Error messages json object
+let taxes = 10; // Default Taxes in %
 
 $(document).ready(function () {
     cart.displayQuantityViewCart();

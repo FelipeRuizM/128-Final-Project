@@ -150,7 +150,11 @@ function validateAll() {
     valid = valid & validatePC("#pc-divS");
 
     if (valid) {
-        submitOrder();
+        $("#modal-confirmation").show();
+        cart.displayCartConfirmation();
+        $(".close").on("click", function() {
+            $("#modal-confirmation").hide();
+        });
     }
 }
 

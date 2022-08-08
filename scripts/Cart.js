@@ -185,4 +185,55 @@ class Cart {
             <strong>${priceSign}${(this.getPriceTotal() + shipping).toFixed(2)}</strong>
         </li>`);
     }
+
+    displayCartConfirmation() {
+        $("#order-confirmation-body").html(`
+            <table class="table table-hover" id="cart-table-confirmation">
+                <thead id="cart-head-confirmation">
+                </thead>
+                <tbody id="cart-body-confirmation">
+                </tbody>
+            </table>
+        `);
+
+        $("#cart-head-confirmation").html(`
+            <tr>
+                <th class="text-center">Title</th>
+                <th class="text-center">Qty</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">Item Total</th>
+            </tr>
+        `);
+        for (let id in this.products) {
+            let p = allProducts[id - 1];
+            $("#cart-body-confirmation").html($("#cart-body-confirmation").html() + `
+                <tr>
+                    <td class="text-center">${p.title}</td>
+                    <td class="text-center">${this.products[id]}</td>
+                    <td class="text-center">${priceSign}${p.price.toFixed(2)}</td>
+                    <td class="text-center">${priceSign}${(p.price * this.products[id]).toFixed(2)}</td>
+                </tr>
+            `);
+        }
+        $("#cart-body-confirmation").html($("#cart-body-confirmation").html() + `
+            <tr>
+                <td class="text-left">Shipping</td>
+                <td class="text-center">&nbsp;</td>
+                <td class="text-center">&nbsp;</td>
+                <td class="text-center">${priceSign}${shipping.toFixed(2)}</td>
+            <tr>
+            <tr>
+                <td class="text-left">Taxes</td>
+                <td class="text-center">&nbsp;</td>
+                <td class="text-center">&nbsp;</td>
+                <td class="text-center">${priceSign}${(taxes / 100 * this.getPriceTotal()).toFixed(2)}</td>
+            <tr>
+            <tr>
+                <td class="text-left">Total</td>
+                <td class="text-center">&nbsp;</td>
+                <td class="text-center">&nbsp;</td>
+                <td class="text-center">${priceSign}${(this.getPriceTotal() + (taxes / 100 * this.getPriceTotal()) + shipping).toFixed(2)}</td>
+            <tr>
+        `);
+    }
 }
