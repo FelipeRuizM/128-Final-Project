@@ -10,8 +10,6 @@ let taxes = 10; // Default Taxes in %
 $(document).ready(function () {
     cart.displayQuantityViewCart();
     load_data_with_fetch();
-    $('#myModal').modal('show');
-    setAll();
 });
 
 function load_data_with_fetch() {

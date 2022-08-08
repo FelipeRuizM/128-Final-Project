@@ -114,14 +114,22 @@ function submitOrder() {
     }).then(response => response.json()).
     then((json) => {
         errors_data = json;
+        $("#modal-confirmation").hide();
         if (errors_data.status === "NOT SUBMITTED") {
-            console.log(errors_data);
             for (let [error, error_m] of Object.entries(errors_data.error)) {
                 setSpecificErrorMessage(error, error_m);
             }
-
         } else {
-            console.log(errors_data.status);
+            $("#myModal").hide();
+            $("#modal-success").fadeIn().delay(5000).fadeOut();
+            cart.products = {};
+            set_cookie("shopping_cart", cart.products);
+            cart.displayQuantityViewCart();
+            cart.displayCart();
+
+            setTimeout(function() {
+                $("#myForm").submit();
+            }, 5000);
         }
     });
 }

@@ -68,7 +68,7 @@
                         </ul>
                     </div>
                     <div class="col-md-8 order-md-1">
-                        <form class="needs-validation" novalidate="">
+                        <form class="needs-validation" novalidate="" id="myForm">
 
                             <!-- Payment -->
                             <h4 class="mb-3">Payment</h4>
@@ -142,7 +142,8 @@
                                     <label for="address">Address</label>
                                     <input type="text" class="form-control" id="address" placeholder="1234 Main St"
                                         required="true" onchange="validateTextField('#address-div', 5);geocoder()"
-                                        oninput="geocoder()" list="datalist-address" autocomplete="false" name="datalist-address">
+                                        oninput="geocoder()" list="datalist-address" autocomplete="false"
+                                        name="datalist-address">
                                     <datalist id="datalist-address"></datalist>
                                     <div class="invalid-feedback">
                                         Please enter your shipping address.
@@ -311,23 +312,40 @@
     </div>
 
     <!-- Modal for Confirmation -->
-    <div class="modal " tabindex="-2" role="dialog" id="modal-confirmation">
+    <div class="modal " tabindex="-1" role="dialog" id="modal-confirmation">
         <div class="modal-dialog modal-md" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Order Confirmation</h5>
-              <button type="button" class="close" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Order Confirmation</h5>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="order-confirmation-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="submitOrder()">Confirm Order</button>
+                </div>
             </div>
-            <div class="modal-body" id="order-confirmation-body">
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Confirm Order</button>
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
+
+    <!-- Modal for Sucess Message -->
+    <div class="modal " tabindex="-1" role="dialog" id="modal-success">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">SUCCESS!</h5>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="order-confirmation-body">
+                    <p>We received your order! We will delivery it within 2 days.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Display the products -->
     <div class="container">
